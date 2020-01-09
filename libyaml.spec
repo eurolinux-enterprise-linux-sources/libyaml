@@ -4,7 +4,7 @@
 
 Name:       libyaml
 Version:    0.1.3
-Release:    1.4%{?dist}
+Release:    4%{?dist}
 Summary:    YAML 1.1 parser and emitter written in C
 
 Group:      System Environment/Libraries
@@ -23,6 +23,7 @@ Patch2:     libyaml-CVE-2013-6393-indent-and-flow-overflow-1-of-3.patch
 Patch3:     libyaml-CVE-2013-6393-indent-and-flow-overflow-2-of-3.patch
 Patch4:     libyaml-CVE-2013-6393-indent-and-flow-overflow-3-of-3.patch
 Patch5:     libyaml-CVE-2014-2525-URL-buffer-overflow.patch
+Patch6:     libyaml-CVE-2014-9130.patch
 
 %description
 YAML is a data serialization format designed for human readability and
@@ -49,6 +50,7 @@ developing applications that use LibYAML.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %build
 autoreconf -i -f
@@ -94,6 +96,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Dec 15 2014 John Eckersberg <eck@redhat.com> - 0.1.3-4
+- Add patch for CVE-2014-9130 (RHBZ#1169369)
+
 * Mon Mar 31 2014 John Eckersberg <jeckersb@redhat.com> - 0.1.3-1.4
 - Work around ldconfig bug with libyaml.so (bz1082822)
 
