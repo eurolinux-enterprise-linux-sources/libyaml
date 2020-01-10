@@ -4,7 +4,7 @@
 
 Name:       libyaml
 Version:    0.1.4
-Release:    11%{?dist}
+Release:    4%{?dist}
 Summary:    YAML 1.1 parser and emitter written in C
 
 Group:      System Environment/Libraries
@@ -13,17 +13,6 @@ URL:        http://pyyaml.org/
 Source0:    http://pyyaml.org/download/libyaml/%{tarballname}-%{version}.tar.gz
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires: autoconf, automake, libtool
-
-# CVE-2013-6393
-# https://bugzilla.redhat.com/show_bug.cgi?id=1033990
-Patch0:     libyaml-CVE-2013-6393-string-overflow.patch
-Patch1:     libyaml-CVE-2013-6393-node-id-hardening.patch
-Patch2:     libyaml-CVE-2013-6393-indent-and-flow-overflow-1-of-3.patch
-Patch3:     libyaml-CVE-2013-6393-indent-and-flow-overflow-2-of-3.patch
-Patch4:     libyaml-CVE-2013-6393-indent-and-flow-overflow-3-of-3.patch
-Patch5:     libyaml-CVE-2014-2525-URL-buffer-overflow.patch
-Patch6:     libyaml-CVE-2014-9130.patch
 
 %description
 YAML is a data serialization format designed for human readability and
@@ -44,16 +33,9 @@ developing applications that use LibYAML.
 
 %prep
 %setup -q -n %{tarballname}-%{version}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
+
 
 %build
-autoreconf -i -f
 %configure
 make %{?_smp_mflags}
 
@@ -62,10 +44,6 @@ make %{?_smp_mflags}
 rm -rf %{buildroot}
 make DESTDIR=%{buildroot} INSTALL="install -p" install
 rm -f %{buildroot}%{_libdir}/*.{la,a}
-
-soname=$(readelf -d %{buildroot}%{_libdir}/libyaml.so | awk '$2 == "(SONAME)" {print $NF}' | tr -d '[]')
-rm -f %{buildroot}%{_libdir}/libyaml.so
-echo "INPUT($soname)" > %{buildroot}%{_libdir}/libyaml.so
 
 
 %check
@@ -97,27 +75,6 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Mon Dec 15 2014 John Eckersberg <eck@redhat.com> - 0.1.4-11
-- Add patch for CVE-2014-9130 (RHBZ#1169369)
-
-* Mon Mar 31 2014 John Eckersberg <jeckersb@redhat.com> - 0.1.4-10
-- Work around ldconfig bug with libyaml.so (bz1082822)
-
-* Mon Mar 24 2014 John Eckersberg <jeckersb@redhat.com> - 0.1.4-9
-- Add patch for CVE-2014-2525 (bz1078083)
-
-* Tue Feb 11 2014 John Eckersberg <jeckersb@redhat.com> - 0.1.4-8
-- Add updated indent/flow patches for CVE-2013-6393
-
-* Wed Jan 29 2014 John Eckersberg <jeckersb@redhat.com> - 0.1.4-7
-- Add patches for CVE-2013-6393 (bz1033990)
-
-* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 0.1.4-6
-- Mass rebuild 2014-01-24
-
-* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 0.1.4-5
-- Mass rebuild 2013-12-27
-
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.1.4-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
